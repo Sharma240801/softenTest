@@ -25,11 +25,12 @@ const Home = () => {
 
   // Default region for map
   const [region, setRegion] = useState({
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
+    latitude: 31.1471,
+    longitude: 75.3412,
+    latitudeDelta: 0.5,
+    longitudeDelta: 0.5,
   });
+
 
   useEffect(() => {
     if (!user?.uid) return;
@@ -124,7 +125,24 @@ const Home = () => {
   };
 
   const onPressLogout = () => {
-    dispatch(logout());
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: () => {
+            dispatch(logout());
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   const onMapPress = (e) => {

@@ -2,13 +2,12 @@ import { Text, View } from "react-native";
 import React, { useState } from "react";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { Button, ScreenWrapper, TextField } from "@/components";
-import { ms } from "@/utils";
+import { ms, dotEmailRegex, passwordRegex } from "@/utils";
 import { fonts } from "@/theme";
 import { useDispatch } from "react-redux";
 import { login } from "@/redux/slices/userSlicer";
 import { showErrorToast } from "@/components/ToastAlert";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-// import { auth } from "../firebase";
 import { auth } from "@/services/firebase";
 
 const Login = () => {
@@ -66,6 +65,19 @@ const Login = () => {
 
     if (password.trim() === "") {
       showErrorToast({ title: "Please enter password" });
+      return;
+    }
+
+    if (!dotEmailRegex.test(email)) {
+      showErrorToast({ title: "Please enter a valid email address" });
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      showErrorToast({
+        title: "Weak Password",
+        message: "Password must be at least 8 characters, include an uppercase letter, a number, and a special character."
+      });
       return;
     }
 
