@@ -6,18 +6,26 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.expo.template"
     },
     "android": {
+      "googleServicesFile": "./firebase/google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#232323"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.expo.template"
+      "package": "com.expo.template",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCmH0McMMzsI3qBS566Nl4j69R1z59tMFE"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -42,7 +50,12 @@
           }
         }
       ],
-      ["./plugins/withIosDeploymentTarget.js", { "deploymentTarget": "16.0" }]
+      [
+        "./plugins/withIosDeploymentTarget.js",
+        {
+          "deploymentTarget": "16.0"
+        }
+      ]
     ]
   }
 }

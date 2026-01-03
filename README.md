@@ -1,136 +1,80 @@
-# ExpoTemplate
+# React Native Task Management App
 
-A modern, customizable React Native template app built with Expo, React Navigation, Redux Toolkit, Unistyles theming, and localization support. This template provides a solid foundation for building cross-platform mobile applications for Android, iOS, and Web.
+This is a React Native mobile application built for a technical task. It illustrates integration with Firebase (Auth & Firestore), Google Maps, and Socket.IO for real-time updates.
 
 ## Features
 
-- **Authentication Flow**: Login, logout, and user state management with Redux Toolkit.
-- **Navigation**: Bottom tab navigation with Home and Profile screens using React Navigation.
-- **Custom Theming**: Light and dark themes powered by Unistyles.
-- **Localization**: Built-in support for English and Spanish (i18n-js, expo-localization).
-- **Reusable Components**: Button, TextField, FullScreenLoader, Toast notifications, and more.
-- **API Integration**: Axios-based API client with RTK Query for authentication and user endpoints.
-- **Persistent State**: Redux state persistence using redux-persist and MMKV storage.
-- **Custom Fonts**: Open Sans font family included and pre-configured.
-- **Responsive Design**: Breakpoints and scaling utilities for adaptive layouts.
-- **Expo EAS Ready**: Pre-configured for EAS build and deployment.
+1.  **Authentication**: Users can Sign Up and Log In using Firebase Email/Password authentication.
+2.  **Task Management**:
+    *   Add new tasks with Title and Description.
+    *   Tasks are stored in Firebase Firestore.
+    *   Tasks have a status: `pending`, `in-progress`, `completed`.
+    *   Real-time list updates using Firestore snapshot listeners.
+3.  **Map Integration**:
+    *   Tasks are displayed as markers on a Google Map.
+    *   Clicking a marker shows the task title and status.
+    *   New tasks are added at the current map center location.
+4.  **Real-Time Notifications (Sockets)**:
+    *   The app listens for `taskUpdated` events via Socket.IO.
+    *   When a task status is updated, a socket event is emitted to the server.
+    *   (Note: Depends on a running Socket.IO server).
 
-## Project Structure
+## Setup Instructions
 
-```
-reactnativetemplateapp/
-  ├── android/           # Native Android project
-  ├── ios/               # Native iOS project
-  ├── src/
-  │   ├── assets/        # Fonts and images
-  │   ├── components/    # Reusable UI components
-  │   ├── constants/     # App-wide constants
-  │   ├── localization/  # i18n setup and translations
-  │   ├── navigation/    # Navigation stacks and tabs
-  │   ├── redux/         # Redux store, slices, services
-  │   ├── screens/       # App screens (Home, Login, Profile)
-  │   ├── storage/       # Storage utilities
-  │   ├── styles/        # Theming and breakpoints
-  │   ├── theme/         # Font and text styles
-  │   └── utils/         # Helper functions
-  ├── App.js             # App entry point
-  ├── app.json           # Expo app config
-  ├── package.json       # Project dependencies and scripts
-  └── ...
+### 1. Prerequisites
+*   Node.js installed.
+*   React Native development environment set up (Android Studio/Xcode).
+
+### 2. Installation
+```bash
+npm install
+# or
+yarn install
 ```
 
-## Getting Started
+### 3. Firebase Setup
+*   The project uses Firebase for Auth and Database.
+*   **Sign-in Method**: Email/Password is enabled.
+*   **Firestore Database**: A collection named `tasks` is used.
+*   **Configuration**: The config is located in `src/services/firebase.js`.
+    *   *Note: For a production app, use `.env` files for keys.*
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) (v18 or newer recommended)
-- [Yarn](https://classic.yarnpkg.com/en/docs/install/) or npm
-- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+### 4. Google Maps Setup
+*   The app uses `react-native-maps`.
+*   **Android**: API Key is configured in `app.json` or `android/app/src/main/AndroidManifest.xml` (ensure you have a valid key with Maps SDK for Android API enabled).
+    *   Current setup assumes the Expo/React Native template has handled basic map config, but you may need to add your API key if map tiles don't load.
 
-### Installation
+### 5. Socket.IO Setup
+*   The app connects to a Socket.IO server defined in `src/services/socket.js`.
+*   **Default URL**: `http://10.0.2.2:3000` (for Android Emulator to verify localhost).
+*   **Server Code**: A simple server is needed to relay events. Create a `server` folder with `index.js`:
+    ```javascript
+    const io = require('socket.io')(3000);
 
-1. **Clone the repository:**
-   ```sh
-   git clone <your-repo-url>
-   cd reactnativetemplateapp
-   ```
-2. **Install dependencies:**
-   ```sh
-   yarn install
-   # or
-   npm install
-   ```
-3. **Start the development server:**
-   ```sh
-   yarn start
-   # or
-   npm run start
-   ```
+    io.on('connection', (socket) => {
+      console.log('User connected');
 
-### Running on Devices
+      socket.on('taskStatusChanged', (data) => {
+        // Broadcast to all other clients
+        socket.broadcast.emit('taskUpdated', data);
+      });
+    });
+    ```
+*   Run the server using `node server/index.js`.
 
-- **Android:**
-  ```sh
-  yarn android
-  ```
-- **iOS:**
-  ```sh
-  yarn ios
-  ```
-- **Web:**
-  ```sh
-  yarn web
-  ```
+### 6. Running the App
+```bash
+# Start Metro Bundler
+npx react-native start
 
-### Build Scripts
+# Run on Android
+npx react-native run-android (or npm run android)
 
-- `yarn build:android:staging` / `yarn build:android:development` / `yarn build:android:production`
-- `yarn build:ios:staging` / `yarn build:ios:development` / `yarn build:ios:production`
+# Run on iOS
+npx react-native run-ios (or npm run ios)
+```
 
-See `package.json` for all available scripts.
-
-## Theming & Customization
-- Uses [react-native-unistyles](https://unistyl.es/) for adaptive theming (light/dark).
-- Edit `src/styles/themes.ts` to customize colors.
-- Responsive breakpoints in `src/styles/breakpoints.ts`.
-
-## Localization
-- English and Spanish translations in `src/localization/translations/`.
-- Add more languages by extending the translation files and updating `src/localization/i18n.js`.
-
-## API & State Management
-- API base URL is set via environment variables (`EXPO_PUBLIC_BASE_URL`).
-- Authentication endpoints: `/auth/login`, `/auth/register`, `/auth/logout`.
-- Redux Toolkit Query for API calls, with persistent state using MMKV.
-
-## Custom Components
-- **Button**: Primary, secondary, and disabled styles, loading state, icons.
-- **TextField**: Customizable input with optional icons.
-- **FullScreenLoader**: Modal loading indicator.
-- **ToastAlert**: Success and error toast notifications.
-- **ScreenWrapper**: Handles safe area, scroll, and loading overlay.
-
-## Fonts
-- Open Sans font family included in `src/assets/fonts/` and loaded via `src/theme/fonts.js`.
-
-## Technologies Used
-- [Expo](https://expo.dev/)
-- [React Native](https://reactnative.dev/)
-- [Redux Toolkit](https://redux-toolkit.js.org/)
-- [React Navigation](https://reactnavigation.org/)
-- [Unistyles](https://unistyl.es/)
-- [i18n-js](https://github.com/fnando/i18n-js)
-- [MMKV Storage](https://github.com/mrousavy/react-native-mmkv)
-- [Axios](https://axios-http.com/)
-
-## Environment Variables
-- Configure API endpoints in `.env.*` files (see `eas.json` for examples):
-  - `EXPO_PUBLIC_BASE_URL`
-  - `EXPO_PUBLIC_SOCKET_URL`
-
-## EAS Build
-- Pre-configured for [Expo Application Services (EAS)](https://docs.expo.dev/eas/).
-- See `eas.json` for build profiles.
-
-## License
-
-This project is provided as a template and does not include a license by default. Add your own license as needed. 
+## Assumptions & Shortcuts
+*   **Authentication Persistence**: We rely on standard Firebase JS SDK behavior. For robust mobile persistence, `react-native-async-storage` integration with Firebase is recommended but might not be fully configured in this short task.
+*   **Location Selection**: To keep the UI simple, new tasks are automatically assigned the coordinates of the **center of the map** currently viewed.
+*   **Socket Server**: The app assumes a local server is running for the "extra" notification feature. If the server is not running, the app continues to work (Firestore provides the primary real-time data sync).
