@@ -144,9 +144,6 @@ const Home = () => {
     );
   };
 
-  const onMapPress = (e) => {
-    setNewTask({ ...newTask, latitude: e.nativeEvent.coordinate.latitude, longitude: e.nativeEvent.coordinate.longitude });
-  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -178,10 +175,6 @@ const Home = () => {
             region={region}
             initialRegion={region}
             onRegionChangeComplete={setRegion}
-            onPress={modalVisible ? onMapPress : undefined} // Allow selecting location only when modal is technically "active" logic or just let them pick anytime? Let's just let them view map primarily.
-          // Actually, let's let them pick a location via a specialized UI or just assume current region center for simplicity if we don't have drag-drop.
-          // Better: Click map to set 'newTask' location if we were in a 'pick mode'.
-          // For this demo: Just show markers.
           >
             {tasks.map((task) => (
               <Marker
