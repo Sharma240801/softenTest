@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
 
-export const socket = io("http://YOUR_LOCAL_IP:3000", {
+export const socket = io("https://10.26.27.151:3000", {
     transports: ["websocket"],
 });

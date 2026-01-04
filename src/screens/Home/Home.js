@@ -16,7 +16,6 @@ const Home = () => {
   const { theme } = useUnistyles();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  // console.log('usersssssss', user)
 
   const [tasks, setTasks] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);

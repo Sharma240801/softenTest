@@ -20,7 +20,7 @@ interface TextFieldProps extends TextInputProps {
   containerStyle?: ViewStyle;
   style?: StyleProp<TextStyle>;
   placeholder?: string;
-  rightIcon?: ImageSourcePropType;
+  rightIcon?: React.ReactNode | ImageSourcePropType;
   onPressRightIcon?: () => void;
   rightIconStyle?: ImageStyle;
 }
@@ -33,7 +33,7 @@ export const TextField = forwardRef<any, TextFieldProps>(
       rightIcon,
       containerStyle,
       placeholder,
-      onPressRightIcon = () => {},
+      onPressRightIcon = () => { },
       rightIconStyle,
       ...rest
     },
@@ -64,10 +64,14 @@ export const TextField = forwardRef<any, TextFieldProps>(
         />
         {rightIcon && (
           <Pressable onPress={onPressRightIcon}>
-            <Image
-              source={rightIcon}
-              style={[styles.eyeIcon, rightIconStyle]}
-            />
+            {typeof rightIcon === 'number' || (typeof rightIcon === 'object' && 'uri' in (rightIcon as any)) ? (
+              <Image
+                source={rightIcon as ImageSourcePropType}
+                style={[styles.eyeIcon, rightIconStyle]}
+              />
+            ) : (
+              rightIcon as React.ReactNode
+            )}
           </Pressable>
         )}
       </View>
